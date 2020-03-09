@@ -1,4 +1,9 @@
-# excelra-ui
+# MM SYGNAL Literature Exploration UI
+
+## Description
+
+This is a web based application to explore MM SYGNAL related literature
+in Pubmed
 
 ## Project setup
 ```
