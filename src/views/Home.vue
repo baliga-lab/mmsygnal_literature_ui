@@ -22,10 +22,6 @@
   <v-row align="center">
     <v-col class="d-flex" cols="12" sm="2">
       <v-autocomplete
-        :items="cancers" v-model="selectedCancer" label="Cancer"></v-autocomplete>
-    </v-col>
-    <v-col class="d-flex" cols="12" sm="2">
-      <v-autocomplete
         :items="diseases" v-model="selectedDisease" label="Disease"></v-autocomplete>
     </v-col>
     <v-col class="d-flex" cols="12" sm="2">
@@ -60,7 +56,6 @@
                     :hide-default-footer="true"
                     class="elevation-1">
         <template v-slot:item="{item}">
-          <td><v-btn :color="cancerMutationColor" @click="loadCancerMutation">{{item.cancerMutation}}</v-btn></td>
           <td><v-btn :color="diseaseMutationColor" @click="loadDiseaseMutation">{{item.diseaseMutation}}</v-btn></td>
           <td><v-btn :color="diseaseRegulatorColor" @click="loadDiseaseRegulator">{{item.diseaseRegulator}}</v-btn></td>
           <td><v-btn :color="diseaseRegulonColor" @click="loadDiseaseRegulon">{{item.diseaseRegulon}}</v-btn></td>
@@ -71,9 +66,7 @@
     </v-col>
   </v-row>
   <v-row align="center">
-    <!-- -->
     <v-col class="d-flex" cols="12" sm="12">
-      <h2 v-if="displayedTable=='cancerMutation'">Cancer-&gt;Mutation (HR: {{hrSlider}} Cancer: {{selectedCancer}} Mutation: {{selectedMutation}})</h2>
       <h2 v-if="displayedTable=='diseaseMutation'">Disease-&gt;Mutation (HR: {{hrSlider}} Disease: {{selectedDisease}} Mutation: {{selectedMutation}})</h2>
       <h2 v-if="displayedTable=='diseaseRegulator'">Disease-&gt;Regulator (HR: {{hrSlider}} Disease: {{selectedDisease}} Regulator: {{selectedRegulator}})</h2>
       <h2 v-if="displayedTable=='diseaseRegulon'">Disease-&gt;Regulon (HR: {{hrSlider}} Disease: {{selectedDisease}} Regulon: {{selectedRegulon}})</h2>
@@ -116,7 +109,6 @@
 <script>
   import {Chart} from 'highcharts-vue'
 
-var cancerMutationColor = '#7cb5ec';
 var diseaseMutationColor = '#e0ed30';
 var diseaseRegulatorColor = '#90ed7d';
 var diseaseRegulonColor = '#f7a35c';
@@ -136,7 +128,6 @@ export default {
                 title: { text: 'PMIDs' }
             },
             series: [
-                { name: 'Cancer->Mutation', data: [3], color: cancerMutationColor },
                 { name: 'Disease->Mutation', data: [12], color: diseaseMutationColor },
                 { name: 'Disease->Regulator', data: [13], color: diseaseRegulatorColor },
                 { name: 'Disease->Regulon', data: [13], color: diseaseRegulonColor },
@@ -144,15 +135,13 @@ export default {
                 { name: 'Mutation->Drugs', data: [13], color: mutationDrugColor },
             ]
         },
-        cancerMutationColor: cancerMutationColor,
         diseaseMutationColor: diseaseMutationColor,
         diseaseRegulatorColor: diseaseRegulatorColor,
         diseaseRegulonColor: diseaseRegulonColor,
         mutationRegulatorColor: mutationRegulatorColor,
         mutationDrugColor: mutationDrugColor,
 
-        selectedCancer: 'All',
-        selectedDisease: 'All',
+        selectedDisease: 'All myelomas',
         selectedMutation: 'All',
         selectedRegulator: 'All',
         selectedRegulon: 'All',
@@ -161,20 +150,18 @@ export default {
 
         items: ['Item 1', 'Item  2'],
         items: [],
-        cancers: ['All', 'tumor'],
-        diseases: ['All'],
+        diseases: ['All Cancers', 'All myelomas'],
         mutations: ['All'],
         regulators: ['All'],
         regulons: ['All'],
         drugs: ['All'],
 
-        hrMin: 2, hrMax: 6, hrSlider: 2,
+        hrMin: 2, hrMax: 6, hrSlider: 6,
 
         tableHeaders: [
-            {text: 'Cancer->Mutation',  value: 'cancerMutation'},
-            {text: 'Disease->Mutation', value: 'diseaseMutation'},
-            {text: 'Disease->Regulator', value: 'diseaseRegulator'},
-            {text: 'Disease->Regulon', value: 'diseaseRegulon'},
+            {text: 'Myeloma->Mutation', value: 'diseaseMutation'},
+            {text: 'Myeloma->Regulator', value: 'diseaseRegulator'},
+            {text: 'Myeloma->Regulon', value: 'diseaseRegulon'},
             {text: 'Mutation->Regulator', value: 'mutationRegulator'},
             {text: 'Mutation->Drugs', value: 'mutationDrugs'},
         ],
@@ -200,59 +187,50 @@ export default {
         highcharts: Chart
     },
     watch: {
-        selectedCancer: function(cancer) {
-            this.searchTerm = '';
-            this.reloadTable(this.hrSlider,
-                             cancer, this.selectedDisease,
-                             this.selectedMutation, this.selectedRegulator,
-                             this.selectedRegulon, this.selectedDrug);
-        },
         selectedDisease: function(disease) {
             this.searchTerm = '';
             this.reloadTable(this.hrSlider,
-                             this.selectedCancer, disease,
+                             disease,
                              this.selectedMutation, this.selectedRegulator,
                              this.selectedRegulon, this.selectedDrug);
         },
         selectedMutation: function(mutation) {
             this.searchTerm = '';
             this.reloadTable(this.hrSlider,
-                             this.selectedCancer, this.selectedDisease,
+                             this.selectedDisease,
                              mutation, this.selectedRegulator,
                              this.selectedRegulon, this.selectedDrug);
         },
         selectedRegulator: function(regulator) {
             this.searchTerm = '';
             this.reloadTable(this.hrSlider,
-                             this.selectedCancer, this.selectedDisease,
+                             this.selectedDisease,
                              this.selectedMutation, regulator,
                              this.selectedRegulon, this.selectedDrug);
         },
         selectedRegulon: function(regulon) {
             this.searchTerm = '';
             this.reloadTable(this.hrSlider,
-                             this.selectedCancer, this.selectedDisease,
+                             this.selectedDisease,
                              this.selectedMutation, this.selectedRegulator,
                              regulon, this.selectedDrug);
         },
         selectedDrug: function(drug) {
             this.searchTerm = '';
             this.reloadTable(this.hrSlider,
-                             this.selectedCancer, this.selectedDisease,
+                             this.selectedDisease,
                              this.selectedMutation, this.selectedRegulator,
                              this.selectedRegulon, drug);
         },
         hrSlider: function(hr) {
             this.searchTerm = '';
             this.reloadTable(hr,
-                             this.selectedCancer, this.selectedDisease,
+                             this.selectedDisease,
                              this.selectedMutation, this.selectedRegulator,
                              this.selectedRegulon, this.selectedDrug);
         },
         page: function(page) {
-            if (this.displayedTable == 'cancerMutation') {
-                this.loadCancerMutation();
-            } else if (this.displayedTable == 'diseaseMutation') {
+            if (this.displayedTable == 'diseaseMutation') {
                 this.loadDiseaseMutation();
             } else if (this.displayedTable == 'diseaseRegulator') {
                 this.loadDiseaseRegulator();
@@ -298,19 +276,17 @@ export default {
             const apiURL = process.env.VUE_APP_API_URL;
             const url = apiURL + "/search_pmid_counts/" + this.hrSlider;
             this.postJSON(url, {search: this.searchTerm}).then(function(result) {
-                self.tableItems[0].cancerMutation = result.num_cancer_mutation_pmids;
                 self.tableItems[0].diseaseMutation = result.num_disease_mutation_pmids;
                 self.tableItems[0].diseaseRegulator = result.num_disease_regulator_pmids;
                 self.tableItems[0].diseaseRegulon = result.num_disease_regulon_pmids;
                 self.tableItems[0].mutationRegulator = result.num_mutation_regulator_pmids;
                 self.tableItems[0].mutationDrugs = result.num_mutation_drug_pmids;
 
-                self.chartOptions.series[0].data = [result.num_cancer_mutation_pmids];
-                self.chartOptions.series[1].data = [result.num_disease_mutation_pmids];
-                self.chartOptions.series[2].data = [result.num_disease_regulator_pmids];
-                self.chartOptions.series[3].data = [result.num_disease_regulon_pmids];
-                self.chartOptions.series[4].data = [result.num_mutation_regulator_pmids];
-                self.chartOptions.series[5].data = [result.num_mutation_drug_pmids];
+                self.chartOptions.series[0].data = [result.num_disease_mutation_pmids];
+                self.chartOptions.series[1].data = [result.num_disease_regulator_pmids];
+                self.chartOptions.series[2].data = [result.num_disease_regulon_pmids];
+                self.chartOptions.series[3].data = [result.num_mutation_regulator_pmids];
+                self.chartOptions.series[4].data = [result.num_mutation_drug_pmids];
             });
         },
         loadTable2: function(url) {
@@ -324,21 +300,6 @@ export default {
                 self.tableItems2 = result.data;
                 self.loading = false;
             });
-        },
-
-        loadCancerMutation: function() {
-            this.displayedTable = 'cancerMutation';
-            if (this.searchTerm === '') {
-                const apiURL = process.env.VUE_APP_API_URL;
-                const url = apiURL + '/cancer_mutation_docs/' + this.hrSlider + '/' +
-                      this.selectedCancer + '/' + this.selectedMutation;
-                this.reloadTable2(url);
-            } else {
-                const apiURL = process.env.VUE_APP_API_URL;
-                const url = apiURL + '/cancer_mutation_search/' + this.hrSlider + '/' +
-                      this.searchTerm;
-                this.reloadTable2(url);
-            }
         },
         loadDiseaseMutation: function() {
             this.displayedTable = 'diseaseMutation';
@@ -410,72 +371,65 @@ export default {
                 this.reloadTable2(url);
             }
         },
-        reloadTable: function(hr, cancer, disease, mutation, regulator, regulon, drug) {
+        reloadTable: function(hr, disease, mutation, regulator, regulon, drug) {
             const apiURL = process.env.VUE_APP_API_URL;
-            const pmidCountURL = apiURL + '/pmid_counts/' + hr + '/' + cancer + '/' +
+            const pmidCountURL = apiURL + '/pmid_counts/' + hr + '/' +
                   disease + '/' + mutation + '/' + regulator + '/' + regulon + '/' + drug;
             var self = this;
             fetch(pmidCountURL).then(function(response) { return response.json();
                                                      }).then(function(result) {
-                self.tableItems[0].cancerMutation = result.num_cancer_mutation_pmids;
                 self.tableItems[0].diseaseMutation = result.num_disease_mutation_pmids;
                 self.tableItems[0].diseaseRegulator = result.num_disease_regulator_pmids;
                 self.tableItems[0].diseaseRegulon = result.num_disease_regulon_pmids;
                 self.tableItems[0].mutationRegulator = result.num_mutation_regulator_pmids;
                 self.tableItems[0].mutationDrugs = result.num_mutation_drug_pmids;
 
-                self.chartOptions.series[0].data = [result.num_cancer_mutation_pmids];
-                self.chartOptions.series[1].data = [result.num_disease_mutation_pmids];
-                self.chartOptions.series[2].data = [result.num_disease_regulator_pmids];
-                self.chartOptions.series[3].data = [result.num_disease_regulon_pmids];
-                self.chartOptions.series[4].data = [result.num_mutation_regulator_pmids];
-                self.chartOptions.series[5].data = [result.num_mutation_drug_pmids];
+                self.chartOptions.series[0].data = [result.num_disease_mutation_pmids];
+                self.chartOptions.series[1].data = [result.num_disease_regulator_pmids];
+                self.chartOptions.series[2].data = [result.num_disease_regulon_pmids];
+                self.chartOptions.series[3].data = [result.num_mutation_regulator_pmids];
+                self.chartOptions.series[4].data = [result.num_mutation_drug_pmids];
                                                      });
         },
         reloadSelects: function() {
             var self = this;
             const apiURL = process.env.VUE_APP_API_URL;
 
-            const cancerURL = apiURL + '/cancers';
+            //const cancerURL = apiURL + '/cancers';
             const diseaseURL = apiURL + '/diseases';
             const mutationURL = apiURL + '/mutations';
             const regulatorURL = apiURL + '/regulators';
             const regulonURL = apiURL + '/regulons';
             const drugURL = apiURL + '/drugs';
 
-            fetch(cancerURL).then(function(response) { return response.json();
-                                                     }).then(function(result) {
-                self.cancers = result.cancers;
-                                                         self.cancers.unshift('All');
-
-                fetch(diseaseURL).then(function(response) { return response.json();
+            fetch(diseaseURL).then(function(response) { return response.json();
                                                           }).then(function(result) {
                   self.diseases = result.diseases;
-                  self.diseases.unshift('All');
-                });
-                fetch(mutationURL).then(function(response) { return response.json();
+                  self.diseases.unshift('All myelomas');
+                  self.diseases.unshift('All Cancers');
+            });
+            fetch(mutationURL).then(function(response) { return response.json();
                                                            }).then(function(result) {
-                  self.mutations = result.mutations;
-                  self.mutations.unshift('All');
-                  fetch(regulatorURL).then(function(response) { return response.json();
-                                                              }).then(function(result) {
-                    self.regulators = result.regulators;
-                    self.regulators.unshift('All');
-                      fetch(regulonURL).then(function(response) { return response.json();
-                                                                }).then(function(result) {
-                      self.regulons = result.regulons;
-                      self.regulons.unshift('All');
-                      fetch(drugURL).then(function(response) { return response.json();
-                                                             }).then(function(result) {
-                        self.drugs = result.drugs;
-                        self.drugs.unshift('All');
-                        self.reloadTable(self.hrSlider, self.selectedCancer, self.selectedDisease,
-                                         self.selectedMutation, self.selectedRegulator,
-                                         self.selectedRegulon, self.selectedDrug);
-                      });
-                    });
+              self.mutations = result.mutations;
+              self.mutations.unshift('All');
+              fetch(regulatorURL).then(function(response) { return response.json();
+                                                          }).then(function(result) {
+                self.regulators = result.regulators;
+                self.regulators.unshift('All');
+                fetch(regulonURL).then(function(response) { return response.json();
+                                                          }).then(function(result) {
+                  self.regulons = result.regulons;
+                  self.regulons.unshift('All');
+                  fetch(drugURL).then(function(response) { return response.json();
+                                                         }).then(function(result) {
+                    self.drugs = result.drugs;
+                    self.drugs.unshift('All');
+                    self.reloadTable(self.hrSlider, self.selectedDisease,
+                                     self.selectedMutation, self.selectedRegulator,
+                                     self.selectedRegulon, self.selectedDrug);
                   });
                 });
+              });
             });
         },
     },
