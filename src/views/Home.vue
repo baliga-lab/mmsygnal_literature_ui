@@ -148,7 +148,6 @@ export default {
         selectedDrug: 'All',
         searchTerm: '',
 
-        items: ['Item 1', 'Item  2'],
         items: [],
         diseases: ['All Cancers', 'All myelomas'],
         mutations: ['All'],
