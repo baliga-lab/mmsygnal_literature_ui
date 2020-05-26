@@ -395,38 +395,32 @@ export default {
             var self = this;
             const apiURL = process.env.VUE_APP_API_URL;
 
-            //const cancerURL = apiURL + '/cancers';
             const diseaseURL = apiURL + '/diseases';
             const mutationURL = apiURL + '/mutations';
             const regulatorURL = apiURL + '/regulators';
             const regulonURL = apiURL + '/regulons';
             const drugURL = apiURL + '/drugs';
 
-            fetch(diseaseURL).then(function(response) { return response.json();
-                                                          }).then(function(result) {
+            self.postJSON(diseaseURL, {}).then(function(result) {
                   self.diseases = result.diseases;
                   self.diseases.unshift('All myelomas');
                   self.diseases.unshift('All Cancers');
-            });
-            fetch(mutationURL).then(function(response) { return response.json();
-                                                           }).then(function(result) {
-              self.mutations = result.mutations;
-              self.mutations.unshift('All');
-              fetch(regulatorURL).then(function(response) { return response.json();
-                                                          }).then(function(result) {
-                self.regulators = result.regulators;
-                self.regulators.unshift('All');
-                fetch(regulonURL).then(function(response) { return response.json();
-                                                          }).then(function(result) {
-                  self.regulons = result.regulons;
-                  self.regulons.unshift('All');
-                  fetch(drugURL).then(function(response) { return response.json();
-                                                         }).then(function(result) {
-                    self.drugs = result.drugs;
-                    self.drugs.unshift('All');
-                    self.reloadTable(self.hrSlider, self.selectedDisease,
-                                     self.selectedMutation, self.selectedRegulator,
-                                     self.selectedRegulon, self.selectedDrug);
+              self.postJSON(mutationURL, {}).then(function(result) {
+                self.mutations = result.mutations;
+                self.mutations.unshift('All');
+                self.postJSON(regulatorURL, {}).then(function(result) {
+                  self.regulators = result.regulators;
+                  self.regulators.unshift('All');
+                  self.postJSON(regulonURL, {}).then(function(result) {
+                    self.regulons = result.regulons;
+                    self.regulons.unshift('All');
+                    self.postJSON(drugURL, {}).then(function(result) {
+                      self.drugs = result.drugs;
+                      self.drugs.unshift('All');
+                      self.reloadTable(self.hrSlider, self.selectedDisease,
+                                       self.selectedMutation, self.selectedRegulator,
+                                       self.selectedRegulon, self.selectedDrug);
+                    });
                   });
                 });
               });
