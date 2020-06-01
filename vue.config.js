@@ -2,6 +2,6 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  //"publicPath": "/excelra/"
-  "publicPath": "/"
+  "publicPath": "/excelra/"
+  //"publicPath": "/"
 }

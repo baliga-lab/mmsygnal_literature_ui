@@ -223,6 +223,7 @@ export default {
         },
         hrSlider: function(hr) {
             this.searchTerm = '';
+            this.reloadSelects();
             this.reloadTable(hr,
                              this.selectedDisease,
                              this.selectedMutation, this.selectedRegulator,
@@ -262,8 +263,7 @@ export default {
         doSearch: function() {
             if (this.searchTerm === '') return;
 
-            this.selectedCancer = 'All';
-            this.selectedDisease = 'All';
+            this.selectedDisease = 'All myelomas';
             this.selectedMutation = 'All';
             this.selectedRegulator = 'All';
             this.selectedRegulon = 'All';
@@ -399,21 +399,26 @@ export default {
             const regulatorURL = apiURL + '/regulators';
             const regulonURL = apiURL + '/regulons';
             const drugURL = apiURL + '/drugs';
+            self.selectedDisease = 'All myelomas';
+            self.selectedMutation = 'All';
+            self.selectedRegulator = 'All';
+            self.selectedRegulon = 'All';
+            self.selectedDrug = 'All';
 
-            self.postJSON(diseaseURL, {}).then(function(result) {
+            self.postJSON(diseaseURL, {hr: self.hrSlider}).then(function(result) {
                   self.diseases = result.diseases;
                   self.diseases.unshift('All myelomas');
                   self.diseases.unshift('All Cancers');
-              self.postJSON(mutationURL, {}).then(function(result) {
+              self.postJSON(mutationURL, {hr: self.hrSlider}).then(function(result) {
                 self.mutations = result.mutations;
                 self.mutations.unshift('All');
-                self.postJSON(regulatorURL, {}).then(function(result) {
+                self.postJSON(regulatorURL, {hr: self.hrSlider}).then(function(result) {
                   self.regulators = result.regulators;
                   self.regulators.unshift('All');
-                  self.postJSON(regulonURL, {}).then(function(result) {
+                  self.postJSON(regulonURL, {hr: self.hrSlider}).then(function(result) {
                     self.regulons = result.regulons;
                     self.regulons.unshift('All');
-                    self.postJSON(drugURL, {}).then(function(result) {
+                    self.postJSON(drugURL, {hr: self.hrSlider}).then(function(result) {
                       self.drugs = result.drugs;
                       self.drugs.unshift('All');
                       self.reloadTable(self.hrSlider, self.selectedDisease,
