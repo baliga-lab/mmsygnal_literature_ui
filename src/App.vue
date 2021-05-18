@@ -14,9 +14,9 @@
       <span class="mr-2">Prototype version</span>
     </v-app-bar>
 
-    <v-content>
+    <v-container fluid>
       <router-view />
-    </v-content>
+    </v-container>
   </v-app>
 </template>
 
